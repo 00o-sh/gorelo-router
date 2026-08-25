@@ -27,7 +27,7 @@
     {
       "binding": "DB",
       "database_name": "mail-parser",
-      "database_id": "7c8a9c88-d5b7-4fcf-a5b8-1b8e31a87dea",
+      "database_id": "13b26730-3e45-4f63-97c9-659625cbdbfb",
       "migrations_dir": "migrations",
     },
   ],
