@@ -100,6 +100,23 @@ function page(totalCount: number): Response {
   });
 }
 
+// Yields to the real event loop so mocked fetches, stream cancellation, and
+// bounded JSON reads can make progress before the virtual clock moves again.
+async function drainRealTasks(turns: number): Promise<void> {
+  for (let turn = 0; turn < turns; turn += 1) {
+    await new Promise<void>((resolve) => setImmediate(resolve));
+  }
+}
+
+// Drives an operation that mixes real async work with faked timers.
+//
+// Virtual time only ever moves to the next timer the code actually scheduled,
+// and only once the real work has been given a chance to schedule it. Stepping
+// the clock by a fixed amount instead lets virtual time outrun the real chain
+// on a loaded machine: a probe deadline then fires while its request is still
+// settling, or a retry wait is scheduled after its own due time has passed.
+// The budget is real wall-clock, so a slow machine waits longer rather than
+// declaring a still-progressing operation stuck.
 async function settleWithFakeTimers<T>(pending: Promise<T>): Promise<T> {
   let settled = false;
   void pending.then(
@@ -110,11 +127,21 @@ async function settleWithFakeTimers<T>(pending: Promise<T>): Promise<T> {
       settled = true;
     },
   );
-  for (let elapsed = 0; !settled && elapsed <= 24_000; elapsed += 50) {
-    await new Promise<void>((resolve) => setImmediate(resolve));
-    await vi.advanceTimersByTimeAsync(50);
+
+  const startedNs = process.hrtime.bigint();
+  const realElapsedMs = (): number =>
+    Number(process.hrtime.bigint() - startedNs) / 1e6;
+  let virtualElapsed = 0;
+
+  while (!settled && realElapsedMs() < 30_000 && virtualElapsed <= 24_000) {
+    await drainRealTasks(20);
+    if (settled || vi.getTimerCount() === 0) continue;
+    const before = Date.now();
+    await vi.advanceTimersToNextTimerAsync();
+    virtualElapsed += Date.now() - before;
   }
-  await new Promise<void>((resolve) => setImmediate(resolve));
+
+  await drainRealTasks(5);
   if (!settled) {
     throw new Error("operation did not settle inside the dashboard deadline");
   }
