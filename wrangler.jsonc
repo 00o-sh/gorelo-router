@@ -1,18 +1,18 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "gorelo-router",
-  "account_id": "00000000000000000000000000000000",
+  "account_id": "c6452865d04ed5bd485084005c60cb02",
   "main": "src/index.ts",
   "compatibility_date": "2026-08-08",
   "workers_dev": false,
   "preview_urls": false,
   "routes": [
     {
-      "pattern": "router.example.com",
+      "pattern": "grl.bbb.support",
       "custom_domain": true,
     },
   ],
-  "addresses": ["*@example.com"],
+  "addresses": ["*@bbb.support"],
   "observability": {
     "enabled": true,
   },
@@ -27,7 +27,7 @@
     {
       "binding": "DB",
       "database_name": "mail-parser",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "7c8a9c88-d5b7-4fcf-a5b8-1b8e31a87dea",
       "migrations_dir": "migrations",
     },
   ],
@@ -38,9 +38,11 @@
     },
   ],
   "vars": {
-    "DEFAULT_GORELO_ADDRESS": "replace-with-your-gorelo-forwarding-address@example.com",
-    "ALLOWED_FORWARD_DOMAINS": "",
+    "DEFAULT_GORELO_ADDRESS": "help@gorelo.bbb.support",
+    "ALLOWED_FORWARD_DOMAINS": "bbb.support",
     "ALLOWED_FORWARD_DESTINATIONS": "",
+    "QUARANTINE_ADDRESS": "Quarantine@gorelo.bbb.support",
+    "FAILURE_FORWARD_ADDRESS": "Fallback@gorelo.bbb.support",
     "QUARANTINE_MODE": "internal",
     "ARCHIVE_MODE": "quarantine",
     "SPAM_THRESHOLD": "5",
@@ -49,7 +51,7 @@
     "MAX_BODY_CHARACTERS": "200000",
     "MAX_HTML_SCAN_CHARACTERS": "500000",
     "EVENT_RETENTION_DAYS": "30",
-    "GORELO_API_BASE_URL": "https://api.aue.gorelo.io",
+    "GORELO_API_BASE_URL": "https://api.usw.gorelo.io",
     "GORELO_CATALOG_CACHE_SECONDS": "300",
     "ALLOWED_WEBHOOK_HOSTS": "",
     "WEBHOOK_TIMEOUT_MS": "8000",
