@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM node:22-bookworm-slim AS dependencies
+FROM node:24-bookworm-slim AS dependencies
 
 ENV NPM_CONFIG_UPDATE_NOTIFIER=false \
     WRANGLER_SEND_METRICS=false
