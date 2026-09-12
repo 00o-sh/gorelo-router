@@ -22,7 +22,7 @@
   "dependencies": {
     "@tabler/core": "1.4.0",
     "postal-mime": "2.7.6",
-    "zod": "4.4.3"
+    "zod": "4.6.2"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "5.20260808.1",
